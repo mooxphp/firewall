@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Moox\Firewall;
 
-use Moox\Core\MooxServiceProvider;
 use Moox\Firewall\Middleware\FirewallMiddleware;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FirewallServiceProvider extends MooxServiceProvider
+class FirewallServiceProvider extends PackageServiceProvider
 {
     public function configureMoox(Package $package): void
     {
