@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Moox\Firewall;
 
-use Moox\Firewall\Middleware\FirewallMiddleware;
+use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Support\Facades\Event;
+use Moox\Firewall\Listeners\FirewallListener;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -21,20 +23,16 @@ class FirewallServiceProvider extends PackageServiceProvider
             ->hasCommands();
     }
 
-    public function packageBooted(): void
-    {
-        $this->app['router']->aliasMiddleware('firewall', FirewallMiddleware::class);
-
-        if (config('firewall.global_enabled', false)) {
-            $this->app['router']->pushMiddlewareToGroup('web', FirewallMiddleware::class);
-            $this->app['router']->pushMiddlewareToGroup('api', FirewallMiddleware::class);
-        }
-    }
-
     public function boot(): void
     {
         parent::boot();
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'firewall');
+
+        if (config('firewall.enabled', false)) {
+            Event::listen(RouteMatched::class, [FirewallListener::class, 'handle']);
+
+            \Log::info('🛡️ Moox Firewall is active');
+        }
     }
 }
