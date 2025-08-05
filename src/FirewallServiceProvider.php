@@ -10,7 +10,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class FirewallServiceProvider extends PackageServiceProvider
 {
-    public function configureMoox(Package $package): void
+    public function configurePackage(Package $package): void
     {
         $package
             ->name('firewall')
@@ -19,25 +19,6 @@ class FirewallServiceProvider extends PackageServiceProvider
             ->hasTranslations()
             ->hasMigrations()
             ->hasCommands();
-
-        $this->getMooxPackage()
-            ->title('Moox Firewall')
-            ->released(false)
-            ->stability('stable')
-            ->category('development')
-            ->usedFor([
-                '%%UsedFor%%',
-            ])
-            ->alternatePackages([
-                '', // optional alternative package (e.g. moox/post)
-            ])
-            ->templateFor([
-                'creating simple Laravel packages',
-            ])
-
-            ->templateRemove([
-                'build.php',
-            ]);
     }
 
     public function packageBooted(): void
@@ -53,9 +34,6 @@ class FirewallServiceProvider extends PackageServiceProvider
     public function boot(): void
     {
         parent::boot();
-
-        // das tut!
-        // dd('Views loaded');
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'firewall');
     }
