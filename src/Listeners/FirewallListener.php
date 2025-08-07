@@ -34,7 +34,7 @@ class FirewallListener
             return;
         }
 
-        if ($request->hasSession() && ($request->session()->get('firewall_authenticated', false) || $request->session()->has('firewall_authenticated'))) {
+        if ($request->hasSession() && $request->session()->get('firewall_authenticated', false)) {
             return;
         }
 
@@ -58,17 +58,28 @@ class FirewallListener
             if ($request->hasSession()) {
                 $request->session()->put('firewall_authenticated', true);
                 $request->session()->save();
-            }
 
-            if ($isBackdoorUrl) {
-                $targetUrl = $request->getSchemeAndHttpHost().'/';
-                if ($request->get('redirect')) {
-                    $targetUrl = $request->get('redirect');
+                if ($isBackdoorUrl) {
+                    $targetUrl = $request->getSchemeAndHttpHost().'/';
+                    if ($request->get('redirect')) {
+                        $targetUrl = $request->get('redirect');
+                    }
+
+                    return redirect($targetUrl);
+                } else {
+                    return redirect($request->url());
                 }
-
-                return redirect($targetUrl)->with('firewall_authenticated', true);
             } else {
-                return redirect($request->url())->with('firewall_authenticated', true);
+                if ($isBackdoorUrl) {
+                    $targetUrl = $request->getSchemeAndHttpHost().'/';
+                    if ($request->get('redirect')) {
+                        $targetUrl = $request->get('redirect');
+                    }
+
+                    return redirect($targetUrl)->with('firewall_authenticated', true);
+                } else {
+                    return redirect($request->url())->with('firewall_authenticated', true);
+                }
             }
         }
 
