@@ -34,7 +34,7 @@ class FirewallListener
             return;
         }
 
-        if ($request->hasSession() && $request->session()->get('firewall_authenticated', false)) {
+        if ($request->hasSession() && ($request->session()->get('firewall_authenticated', false) || $request->session()->has('firewall_authenticated'))) {
             return;
         }
 
